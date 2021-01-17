@@ -83,6 +83,7 @@ public class AnnotationConfigApplicationContext extends GenericApplicationContex
 	 * e.g. {@link Configuration @Configuration} classes
 	 */
 	public AnnotationConfigApplicationContext(Class<?>... annotatedClasses) {
+		// 定义一个读取器和扫描器
 		this();
 		register(annotatedClasses);
 		refresh();
@@ -144,6 +145,7 @@ public class AnnotationConfigApplicationContext extends GenericApplicationContex
 	//---------------------------------------------------------------------
 
 	/**
+	 * 注册一个或多个带有配置注解的class，然后交由前面构造函数的reader去注册
 	 * Register one or more annotated classes to be processed.
 	 * <p>Note that {@link #refresh()} must be called in order for the context
 	 * to fully process the new classes.

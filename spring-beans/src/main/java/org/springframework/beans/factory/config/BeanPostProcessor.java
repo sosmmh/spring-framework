@@ -20,6 +20,14 @@ import org.springframework.beans.BeansException;
 import org.springframework.lang.Nullable;
 
 /**
+ * spring的扩展点（不止一个）
+ * 通过实现该接口，可以在bean实例化前后进行操作，比如AOP，
+ * 所有实现了BeanPostProcessor的类形成一个列表然后在spring启动后依次被调用，优先级可以实现另个接口设置优先级参数
+ *
+ *
+ *
+ *
+ *
  * Factory hook that allows for custom modification of new bean instances,
  * e.g. checking for marker interfaces or wrapping them with proxies.
  *

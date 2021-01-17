@@ -217,7 +217,7 @@ class ConfigurationClassParser {
 	}
 
 
-	protected void processConfigurationClass(ConfigurationClass configClass) throws IOException {
+	protected void   processConfigurationClass(ConfigurationClass configClass) throws IOException {
 		if (this.conditionEvaluator.shouldSkip(configClass.getMetadata(), ConfigurationPhase.PARSE_CONFIGURATION)) {
 			return;
 		}
