@@ -598,6 +598,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 				// Last step: publish corresponding event.
 				/**
 				 * 完成此上下文的刷新，主要是推送上下文刷新完毕事件（ContextRefreshedEvent ）到监听器。
+				 * 比如实现了ApplicationContextListener接口的
 				 */
 				finishRefresh();
 			}

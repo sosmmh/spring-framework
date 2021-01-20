@@ -146,6 +146,7 @@ public class ContextLoader {
 			 * =org.springframework.web.context.support.XmlWebApplicationContext
 			 */
 			ClassPathResource resource = new ClassPathResource(DEFAULT_STRATEGIES_PATH, ContextLoader.class);
+			// /org/springframework/web/context/ContextLoader.properties
 			defaultStrategies = PropertiesLoaderUtils.loadProperties(resource);
 		}
 		catch (IOException ex) {
@@ -289,6 +290,9 @@ public class ContextLoader {
 				 */
 				this.context = createWebApplicationContext(servletContext);
 			}
+			/**
+			 * 一般都是ConfigurableWebApplicationContext的子类或实现类
+			 */
 			if (this.context instanceof ConfigurableWebApplicationContext) {
 				ConfigurableWebApplicationContext cwac = (ConfigurableWebApplicationContext) this.context;
 				if (!cwac.isActive()) {
@@ -300,10 +304,13 @@ public class ContextLoader {
 						ApplicationContext parent = loadParentContext(servletContext);
 						cwac.setParent(parent);
 					}
-					// 2. 配置和刷新上下文
+					/**
+					 * 3配置和刷新web上下文
+					 */
 					configureAndRefreshWebApplicationContext(cwac, servletContext);
 				}
 			}
+			// 4.设置WebApplicationContext属性
 			servletContext.setAttribute(WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE, this.context);
 
 			ClassLoader ccl = Thread.currentThread().getContextClassLoader();
@@ -396,22 +403,30 @@ public class ContextLoader {
 	 * @param sc ApplicationContextFacade
 	 */
 	protected void configureAndRefreshWebApplicationContext(ConfigurableWebApplicationContext wac, ServletContext sc) {
+		// 1. 设置spring容器的上下文id
 		if (ObjectUtils.identityToString(wac).equals(wac.getId())) {
 			// The application context id is still set to its original default value
 			// -> assign a more useful id based on available information
+			// 默认使用tomcat容器的id；可通过web.xmll进行配置
+			//     <context-param>
+			//        <param-name>contextId</param-name>
+			//        <param-value>asdadasd</param-value>
+			//    </context-param>
 			String idParam = sc.getInitParameter(CONTEXT_ID_PARAM);
 			if (idParam != null) {
 				wac.setId(idParam);
 			}
 			else {
 				// Generate default id...
+				// 如果idParam为空, 则生成默认的id, 例如: org.springframework.web.context.WebApplicationContext:
 				wac.setId(ConfigurableWebApplicationContext.APPLICATION_CONTEXT_ID_PREFIX +
 						ObjectUtils.getDisplayString(sc.getContextPath()));
 			}
 		}
 
+		// 2. 将ServletContext设置进was里
 		wac.setServletContext(sc);
-		// 获取web.xml配置的springmvc.xml配置文件
+		// 3. 获取web.xml配置的contextConfigLocation——application.xml配置文件
 		String configLocationParam = sc.getInitParameter(CONFIG_LOCATION_PARAM);
 		if (configLocationParam != null) {
 			wac.setConfigLocation(configLocationParam);
@@ -425,6 +440,7 @@ public class ContextLoader {
 			((ConfigurableWebEnvironment) env).initPropertySources(sc, null);
 		}
 
+		// 回调所有实现了ApplicationContextInitializer接口的实现类
 		customizeContext(sc, wac);
 		wac.refresh();
 	}
