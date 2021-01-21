@@ -497,6 +497,7 @@ public class ContextLoader {
 		List<Class<ApplicationContextInitializer<ConfigurableApplicationContext>>> classes =
 				new ArrayList<>();
 
+		// 获取web.xml里配置的 globalInitializerClasses
 		String globalClassNames = servletContext.getInitParameter(GLOBAL_INITIALIZER_CLASSES_PARAM);
 		if (globalClassNames != null) {
 			for (String className : StringUtils.tokenizeToStringArray(globalClassNames, INIT_PARAM_DELIMITERS)) {
@@ -504,6 +505,11 @@ public class ContextLoader {
 			}
 		}
 
+		// 获取web.xml里配置的 contextInitializerClasses
+		//     <context-param>
+		//        <param-name>contextInitializerClasses</param-name>
+		//        <param-value>com.sosmmh.demo.spring.spring.context.SpringApplicationContextInitializer</param-value>
+		//    </context-param>
 		String localClassNames = servletContext.getInitParameter(CONTEXT_INITIALIZER_CLASSES_PARAM);
 		if (localClassNames != null) {
 			for (String className : StringUtils.tokenizeToStringArray(localClassNames, INIT_PARAM_DELIMITERS)) {
